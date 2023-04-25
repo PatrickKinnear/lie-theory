@@ -4,6 +4,7 @@ import algebra.module.submodule.basic
 import linear_algebra.free_algebra
 import linear_algebra.basis
 import init.algebra.order
+import data.fin.basic
 open set
 
 --We need to prove the Diamond Lemma!
@@ -57,9 +58,12 @@ structure inclusion_ambiguity :=
 
 --Sequence of reductions
 def reductions : set (free_algebra R X →ₗ[R] free_algebra R X) := { (reduction X R S triple.1 triple.2.1 triple.2.2) | triple : S.set × free_monoid X ×  free_monoid X }
-
 variable n : ℕ 
 variable r : fin n → reductions X R S
+
+def compose (n : ℕ) (f : fin n → reductions X R S): (free_algebra R X →ₗ[R] free_algebra R X) 
+| (1, f)     := f 0
+| m+1 f   := (f m) ∘ (compose m (f ∘ (fin.succ_embedding m)))
 
 --Partial order
 class semigroup_partial_order (α : Type) [semigroup α] extends partial_order α :=
@@ -74,5 +78,11 @@ class compatible_semigroup_partial_order (S : reduction_system X R) extends semi
 (compatible : ∀ σ : S.set, ∀ u ∈ basis_terms X R (σ.val.2), u<σ.val.1)
 
 -- This takes as argument a reduction system S (which already includes X and R)
+def ambiguity_is_resolvable (Amb : inclusion_ambiguity or ): Prop :=
+begin
+by_cases A.overlap, {
+  ∃ f : reductions X R S,  (compose f) (reduction Amb.σ 1 1) Amb.C 
+}, {},
+end
 
 
