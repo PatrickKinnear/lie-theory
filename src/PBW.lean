@@ -43,4 +43,8 @@ def irr_set : set (free_algebra R X) := { a : free_algebra R X | ∀ σ : S.set,
 def irr : submodule R (free_algebra R X) :=
 ⟨irr_set X R S, by sorry, by sorry, by sorry⟩
 
-#check irr X R S
+variable 5 : ℕ
+
+variable r : fin 5 → (S.set) × free_monoid X × free_monoid X
+
+#check reduction X R S (r 1)
