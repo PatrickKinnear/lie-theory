@@ -62,6 +62,7 @@ def reductions : set (free_algebra R X →ₗ[R] free_algebra R X) := { (reducti
 variable n : ℕ 
 variable r : fin n → reductions X R S
 
+--Composition of reductions
 def compose (n : ℕ) (f : fin n → reductions X R S): (free_algebra R X →ₗ[R] free_algebra R X) 
 | (1, f)     := f 0
 | m+1 f   := (f m) ∘ (compose m (f ∘ (fin.succ_embedding m)))
@@ -74,7 +75,6 @@ class semigroup_partial_order (α : Type) [semigroup α] extends partial_order �
 def basis_terms (a : free_algebra R X) : set (free_monoid X) := { m : free_monoid X | (free_algebra.basis_free_monoid R X).repr a m ≠ 0}
 
 -- This takes as argument a semigroup for now, so need to pass <X> as argument
-
 class compatible_semigroup_partial_order (S : reduction_system X R) extends semigroup_partial_order (free_monoid X):=
 (compatible : ∀ σ : S.set, ∀ u ∈ basis_terms X R (σ.val.2), u<σ.val.1)
 
