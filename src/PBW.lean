@@ -19,9 +19,10 @@ structure reduction_system :=
 
 variable (S : reduction_system X R)
 
+--Inclusion of free monoid into free algebra
 def inc_free_monoid_free_alg : free_monoid X →* free_algebra R X:= free_monoid.lift (free_algebra.ι R)
 
-
+--Define reduction on basis elements
 noncomputable def reduction_on_basis (σ : S.set) (A B : free_monoid X) : free_monoid X → free_algebra R X := 
 begin
   intro x,
@@ -34,9 +35,9 @@ begin
   },
 end
 
-noncomputable def reduction (σ : S.set) (A B: free_monoid X) : free_algebra R X →ₗ[R] free_algebra R X := basis.constr (free_algebra.basis_free_monoid R X) R (reduction_on_basis X R S σ A B) 
+noncomputable def reduction (σ : S.set) (A B: free_monoid X) : free_algebra R X →ₗ[R] free_algebra R X := basis.constr (free_algebra.basis_free_monoid R X) R (reduction_on_basis X R S σ A B)
 
-
+--Set of irreducible polynomials
 def irr_set : set (free_algebra R X) := { a : free_algebra R X | ∀ σ : S.set, ∀ A : free_monoid X, ∀ B : free_monoid X, reduction X R S σ A B a = a}
 
 def irr : submodule R (free_algebra R X) :=
