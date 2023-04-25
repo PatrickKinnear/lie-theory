@@ -34,8 +34,6 @@ begin
   },
 end
 
-def randomname : free_monoid X → free_algebra R X := sorry
-
 noncomputable def reduction (σ : S.set) (A B: free_monoid X) : free_algebra R X →ₗ[R] free_algebra R X := basis.constr (free_algebra.basis_free_monoid R X) R (reduction_on_basis X R S σ A B) 
 
 
