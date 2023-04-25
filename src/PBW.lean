@@ -1,3 +1,1 @@
----Diamond Lemma
-
---Reduction System
+--We need to prove the Diamond Lemma!
