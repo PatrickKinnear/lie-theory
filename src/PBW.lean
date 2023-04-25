@@ -59,8 +59,9 @@ structure inclusion_ambiguity :=
 
 --Sequence of reductions
 def reductions : set (free_algebra R X →ₗ[R] free_algebra R X) := { (reduction X R S triple.1 triple.2.1 triple.2.2) | triple : S.set × free_monoid X ×  free_monoid X }
---variable n : ℕ 
---variable r : fin n → reductions X R S
+
+variable n : ℕ 
+variable r : fin n → reductions X R S
 
 def compose (n : ℕ) (f : fin n → reductions X R S): (free_algebra R X →ₗ[R] free_algebra R X) :=
 begin
@@ -92,3 +93,15 @@ variable x : Type
 #check λ x, x
 
 
+lemma observation (S : reduction_system X R)[compatible_semigroup_partial_order X R S]
+(A B : free_monoid X)(σ : S.set): ∀ a : free_monoid X, ∀ u ∈ (basis_terms X R)( (reduction X R S σ A B) (inc_free_monoid_free_alg X R a)),  ¬ u > a:=
+begin
+  intros a u hu,
+  by_cases a=A*σ.val.1*B,
+  {
+    sorry,
+  },
+  {
+    sorry,
+  },
+end
