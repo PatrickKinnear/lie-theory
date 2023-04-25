@@ -6,7 +6,6 @@ import linear_algebra.basis
 import init.algebra.order
 open set
 
-
 --We need to prove the Diamond Lemma!
 
 variables (X : Type) 
@@ -44,9 +43,7 @@ def irr_set : set (free_algebra R X) := { a : free_algebra R X | ∀ σ : S.set,
 def irr : submodule R (free_algebra R X) :=
 ⟨irr_set X R S, by sorry, by sorry, by sorry⟩
 
-
-
---Defining ambiguities
+--Ambiguities
 
 structure overlap_ambiguity :=
 (σ τ : S.set)
@@ -58,15 +55,13 @@ structure inclusion_ambiguity :=
 (A B : free_monoid X)
 (inclusion : τ.val.1 = A*σ.val.1*B)
 
+--Sequence of reductions
 def reductions : set (free_algebra R X →ₗ[R] free_algebra R X) := { (reduction X R S triple.1 triple.2.1 triple.2.2) | triple : S.set × free_monoid X ×  free_monoid X }
 
 variable n : ℕ 
 variable r : fin n → reductions X R S
 
-
-
-
-
+--Partial order
 class semigroup_partial_order (α : Type) [semigroup α] extends partial_order α :=
 (semigroup_condition : ∀ b b': α, b≤b' → ∀ a c: α, a*b*c ≤ a*b'*c)
 
