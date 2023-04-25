@@ -1,1 +1,3 @@
----This is the first file!
+---Diamond Lemma
+
+--Reduction System
