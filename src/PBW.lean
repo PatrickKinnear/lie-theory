@@ -17,7 +17,7 @@ structure reduction_system :=
 
 variable (S : reduction_system X R)
 
-def reduction (σ : S.set) (A : free_monoid X) (B : free_monoid X) : free_algebra R X → free_algebra R X := sorry
+def reduction (σ : S.set) (A : free_monoid X) (B : free_monoid X) : free_algebra R X →ₗ[R] free_algebra R X := sorry
 
 def irr_set : set (free_algebra R X) := { a : free_algebra R X | ∀ σ : S.set, ∀ A : free_monoid X, ∀ B : free_monoid X, reduction X R S σ A B a ≠ a}
 
