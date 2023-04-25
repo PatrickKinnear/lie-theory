@@ -5,6 +5,7 @@ import linear_algebra.free_algebra
 import linear_algebra.basis
 import init.algebra.order
 import data.fin.basic
+import algebra.module.linear_map
 open set
 
 --We need to prove the Diamond Lemma!
@@ -61,9 +62,12 @@ def reductions : set (free_algebra R X →ₗ[R] free_algebra R X) := { (reducti
 variable n : ℕ 
 variable r : fin n → reductions X R S
 
-def compose (n : ℕ) (f : fin n → reductions X R S): (free_algebra R X →ₗ[R] free_algebra R X) 
-| (1, f)     := f 0
-| m+1 f   := (f m) ∘ (compose m (f ∘ (fin.succ_embedding m)))
+def compose (n : ℕ) (f : fin n → reductions X R S): (free_algebra R X →ₗ[R] free_algebra R X) :=
+begin
+induction n,
+{exact linear_map.id},
+{exact (f n_n) ∘ n_ih (f  ∘ fin.succ_embedding n_n)}
+end
 
 --Partial order
 class semigroup_partial_order (α : Type) [semigroup α] extends partial_order α :=
@@ -81,5 +85,8 @@ by_cases A.overlap, {
   ∃ f : reductions X R S,  (compose f) (reduction Amb.σ 1 1) Amb.C 
 }, {},
 end
+
+variable x : Type
+#check λ x, x
 
 
