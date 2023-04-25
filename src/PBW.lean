@@ -19,7 +19,7 @@ variable (S : reduction_system X R)
 
 def inc_free_monoid_free_alg : free_monoid X →* free_algebra R X:= free_monoid.lift (free_algebra.ι R)
 
-
+def reduction (σ : S.set) (A B: free_monoid X) : free_algebra R X → free_algebra R X := sorry
 
 noncomputable def reduction_fake (σ : S.set) (A : free_monoid X) (B : free_monoid X) : free_monoid X → free_algebra R X := 
 begin
