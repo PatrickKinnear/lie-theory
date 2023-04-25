@@ -20,9 +20,10 @@ structure reduction_system :=
 
 variable (S : reduction_system X R)
 
+--Inclusion of free monoid into free algebra
 def inc_free_monoid_free_alg : free_monoid X →* free_algebra R X:= free_monoid.lift (free_algebra.ι R)
 
-
+--Define reduction on basis elements
 noncomputable def reduction_on_basis (σ : S.set) (A B : free_monoid X) : free_monoid X → free_algebra R X := 
 begin
   intro x,
@@ -35,17 +36,33 @@ begin
   },
 end
 
-noncomputable def reduction (σ : S.set) (A B: free_monoid X) : free_algebra R X →ₗ[R] free_algebra R X := basis.constr (free_algebra.basis_free_monoid R X) R (reduction_on_basis X R S σ A B) 
+noncomputable def reduction (σ : S.set) (A B: free_monoid X) : free_algebra R X →ₗ[R] free_algebra R X := basis.constr (free_algebra.basis_free_monoid R X) R (reduction_on_basis X R S σ A B)
 
-
-def irr_set : set (free_algebra R X) := { a : free_algebra R X | ∀ σ : S.set, ∀ A : free_monoid X, ∀ B : free_monoid X, reduction X R S σ A B a ≠ a}
+--Set of irreducible polynomials
+def irr_set : set (free_algebra R X) := { a : free_algebra R X | ∀ σ : S.set, ∀ A : free_monoid X, ∀ B : free_monoid X, reduction X R S σ A B a = a}
 
 def irr : submodule R (free_algebra R X) :=
 ⟨irr_set X R S, by sorry, by sorry, by sorry⟩
 
 
 
-#check irr X R S
+--Defining ambiguities
+
+structure overlap_ambiguity :=
+(σ τ : S.set)
+(A B C : free_monoid X)
+(overlap : σ.val.1 = A*B ∧ τ.val.1 = B*C)
+
+structure inclusion_ambiguity :=
+(σ τ : S.set)
+(A B : free_monoid X)
+(inclusion : τ.val.1 = A*σ.val.1*B)
+
+def reductions : set (free_algebra R X →ₗ[R] free_algebra R X) := { (reduction X R S triple.1 triple.2.1 triple.2.2) | triple : S.set × free_monoid X ×  free_monoid X }
+
+variable n : ℕ 
+variable r : fin n → reductions X R S
+
 
 
 
@@ -53,4 +70,5 @@ def irr : submodule R (free_algebra R X) :=
 class semigroup_partial_order (α : Type) [semigroup α] extends partial_order α :=
 (semigroup_condition : ∀ b b': α, b≤b' → ∀ a c: α, a*b*c ≤ a*b'*c)
 
-class
+
+
