@@ -65,11 +65,14 @@ variable r : fin n → reductions X R S
 class semigroup_partial_order (α : Type) [semigroup α] extends partial_order α :=
 (semigroup_condition : ∀ b b': α, b≤b' → ∀ a c: α, a*b*c ≤ a*b'*c)
 
+--Extracting basis terms in some element of free algebra
+def basis_terms (a : free_algebra R X) : set (free_monoid X) := { m : free_monoid X | (free_algebra.basis_free_monoid R X).repr a m ≠ 0}
+
 -- This takes as argument a semigroup for now, so need to pass <X> as argument
 
 class compatible_semigroup_partial_order (S : reduction_system X R) extends semigroup_partial_order (free_monoid X):=
-(compatible : ∀ σ : S.set, ∀ u : free_monoid X, (((free_algebra.basis_free_monoid R X).repr σ.val.2 )u≠0) → u<σ.val.1) 
+(compatible : ∀ σ : S.set, ∀ u ∈ basis_terms X R (σ.val.2), u<σ.val.1)
 
--- This takes as argument a reduction system S (wich already includes X and R)
+-- This takes as argument a reduction system S (which already includes X and R)
 
 
