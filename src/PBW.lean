@@ -37,13 +37,12 @@ end
 noncomputable def reduction (σ : S.set) (A B: free_monoid X) : free_algebra R X →ₗ[R] free_algebra R X := basis.constr (free_algebra.basis_free_monoid R X) R (reduction_on_basis X R S σ A B) 
 
 
-def irr_set : set (free_algebra R X) := { a : free_algebra R X | ∀ σ : S.set, ∀ A : free_monoid X, ∀ B : free_monoid X, reduction X R S σ A B a ≠ a}
+def irr_set : set (free_algebra R X) := { a : free_algebra R X | ∀ σ : S.set, ∀ A : free_monoid X, ∀ B : free_monoid X, reduction X R S σ A B a = a}
 
 def irr : submodule R (free_algebra R X) :=
 ⟨irr_set X R S, by sorry, by sorry, by sorry⟩
 
-variable 5 : ℕ
+def reductions : set (free_algebra R X →ₗ[R] free_algebra R X) := { (reduction X R S triple.1 triple.2.1 triple.2.2) | triple : S.set × free_monoid X ×  free_monoid X }
 
-variable r : fin 5 → (S.set) × free_monoid X × free_monoid X
-
-#check reduction X R S (r 1)
+variable n : ℕ 
+variable r : fin n → reductions X R S
