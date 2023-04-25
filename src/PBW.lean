@@ -43,8 +43,20 @@ def irr_set : set (free_algebra R X) := { a : free_algebra R X | ∀ σ : S.set,
 def irr : submodule R (free_algebra R X) :=
 ⟨irr_set X R S, by sorry, by sorry, by sorry⟩
 
+--Defining ambiguities
+
+structure overlap_ambiguity :=
+(σ τ : S.set)
+(A B C : free_monoid X)
+(overlap : σ.val.1 = A*B ∧ τ.val.1 = B*C)
+
+structure inclusion_ambiguity :=
+(σ τ : S.set)
+(A B : free_monoid X)
+(inclusion : τ.val.1 = A*σ.val.1*B)
+
 variable 5 : ℕ
 
 variable r : fin 5 → (S.set) × free_monoid X × free_monoid X
 
-#check reduction X R S (r 1)
+#check reduction X R S (r(1))
