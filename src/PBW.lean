@@ -45,5 +45,3 @@ def irr : submodule R (free_algebra R X) :=
 
 def reductions : set (free_algebra R X →ₗ[R] free_algebra R X) := { (reduction X R S triple.1 triple.2.1 triple.2.2) | triple : S.set × free_monoid X ×  free_monoid X }
 
-variable n : ℕ 
-variable r : fin n → reductions X R S
