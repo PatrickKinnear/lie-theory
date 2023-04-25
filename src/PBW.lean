@@ -3,6 +3,7 @@ import algebra.free_algebra
 import algebra.module.submodule.basic
 import linear_algebra.free_algebra
 import linear_algebra.basis
+import init.algebra.order
 open set
 
 
@@ -42,4 +43,14 @@ def irr_set : set (free_algebra R X) := { a : free_algebra R X | ∀ σ : S.set,
 def irr : submodule R (free_algebra R X) :=
 ⟨irr_set X R S, by sorry, by sorry, by sorry⟩
 
+
+
 #check irr X R S
+
+
+
+
+class semigroup_partial_order (α : Type) [semigroup α] extends partial_order α :=
+(semigroup_condition : ∀ b b': α, b≤b' → ∀ a c: α, a*b*c ≤ a*b'*c)
+
+class
