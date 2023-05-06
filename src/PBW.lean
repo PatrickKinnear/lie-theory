@@ -60,14 +60,38 @@ structure inclusion_ambiguity :=
 --Sequence of reductions
 def reductions : set (free_algebra R X →ₗ[R] free_algebra R X) := { (reduction X R S triple.1 triple.2.1 triple.2.2) | triple : S.set × free_monoid X ×  free_monoid X }
 
-variable n : ℕ 
-variable r : fin n → reductions X R S
+variable n : ℕ
 
-def compose (n : ℕ) (f : fin n → reductions X R S): (free_algebra R X →ₗ[R] free_algebra R X) :=
+def compose (f : fin n → reductions X R S): (free_algebra R X →ₗ[R] free_algebra R X) :=
 begin
 induction n,
 {exact linear_map.id},
-{exact (f n_n).val ∘ₗ n_ih (f  ∘ fin.succ_embedding n_n)}
+{exact (f n_n).val ∘ₗ n_ih (f ∘ fin.succ_embedding n_n)}
+end
+
+--This seems unnecessarily set-dependent?
+def final_on (r : fin n → reductions X R S) (a : free_algebra R X) : Prop := ((compose X R S n r) a) ∈ (irr X R S)
+
+--Not the most elegant handling of infinite sequences?
+def reduction_finite (a : free_algebra R X) : Prop := ∀ r : ℕ → reductions X R S, ∃ N : ℕ, ∀ n > N, (compose X R S n (r ∘ (fin.coe_embedding))) a = (compose X R S (n-1) (r ∘ (fin.coe_embedding))) a ∧ (compose X R S (n-1) (r ∘ (fin.coe_embedding))) a ∈ (irr X R S)
+
+def rf_submodule : submodule R (free_algebra R X) :=
+⟨{a : free_algebra R X | reduction_finite X R S a}, by sorry, by sorry, by sorry⟩
+
+-- fact that sequences acting nontrivially on rf  things are final!!
+
+def reduction_unique (a : free_algebra R X) : Prop := reduction_finite X R S a ∧ ∃ x : irr X R S, ∀ n : ℕ, ∀ r : fin n → reductions X R S, (final_on X R S n r a) → (compose X R S n r) a = x
+
+def ru_submodule : submodule R (free_algebra R X) :=
+⟨{a : free_algebra R X | reduction_unique X R S a}, by sorry, by sorry, by sorry⟩
+
+def r_s : ru_submodule X R S → irr X R S:=
+begin
+intro a,
+have h : reduction_unique X R S a,
+sorry,
+cases h,
+--need to get  x out of h_right... then make it linear!
 end
 
 --Partial order
