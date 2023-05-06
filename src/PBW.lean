@@ -78,7 +78,7 @@ def reduction_finite (a : free_algebra R X) : Prop := ∀ r : ℕ → reductions
 def rf_submodule : submodule R (free_algebra R X) :=
 ⟨{a : free_algebra R X | reduction_finite X R S a}, by sorry, by sorry, by sorry⟩
 
--- fact that sequences acting nontrivially on rf  things are final!!
+-- fact that maximal sequences acting nontrivially on rf things are final!! Notion of maximal element; extended natural numbers...
 
 def reduction_unique (a : free_algebra R X) : Prop := reduction_finite X R S a ∧ ∃ x : irr X R S, ∀ n : ℕ, ∀ r : fin n → reductions X R S, (final_on X R S n r a) → (compose X R S n r) a = x
 
