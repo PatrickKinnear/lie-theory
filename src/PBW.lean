@@ -148,6 +148,12 @@ begin
   intros a u hu,
   by_cases a = A*σ.val.1*B,
   {
+    have step₁: ∀ v∈ (basis_terms X R) σ.val.2, A*v*B≤A*σ.val.1*B,
+    {
+      intros v hv,
+      apply _inst_3.semigroup_condition v σ.val.1,
+      exact (le_not_le_of_lt(_inst_3.compatible σ v hv)).1,      
+    },
     sorry,
   },
   {
