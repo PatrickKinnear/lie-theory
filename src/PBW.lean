@@ -126,26 +126,25 @@ by_cases A.overlap, {
 }, {},
 end
 
-
 lemma observation (S : reduction_system X R)[compatible_semigroup_partial_order X R S]
-(A B : free_monoid X)(σ : S.set): ∀ a : free_monoid X, ∀ u ∈ (basis_terms X R)( (reduction X R S σ A B) (inc_free_monoid_free_alg X R a)),  ¬ u > a:=
+(A B : free_monoid X)(σ : S.set): ∀ a : free_monoid X, ∀ u ∈ (basis_terms X R)( (reduction_on_basis X R S σ A B) a),  ¬ u > a:=
 begin
   intros a u hu,
-  let iₐ:=(inc_free_monoid_free_alg X R a),
-  by_cases a=A*σ.val.1*B,
+  by_cases a = A*σ.val.1*B,
   {
     sorry,
   },
   {
-    have step: u=a,
+    have step₂ : basis_terms X R ((reduction_on_basis X R S σ A B) a) = {a},
     {
-      have step₂ : reduction X R S σ A B iₐ = iₐ,
-      {
-        
-      },
-
+      sorry,
     },
-    rw step,
+    have step₃ : u = a,
+    {
+      rw step₂ at hu,
+      exact hu,
+    },
+    rw step₃,
     exact lt_irrefl a,
   },
 end
