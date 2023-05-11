@@ -195,4 +195,11 @@ def compatibility_rel (A : free_monoid X) (s : semigroup_partial_order (free_mon
 -- This quotient is used to talk of when an overlap is resolvable rel a partial order (in place of using an ideal which is not defined for noncommutative rings yet)
 def rel_quotient (A : free_monoid X) (s : semigroup_partial_order (free_monoid X)): Type* := ring_quot (compatibility_rel X R S A s)
 
-def overlap_resolvable_rel (amb : overlap_ambiguity X R S) ( _ : semigroup_partial_order (free_monoid X)) : Prop := ,
+--- This predicate is the statement that an overlap ambiguity is resolvable rel a given partial order. Instead of saying something is in an ideal, we say it is zero in a quotient.
+def overlap_resolvable_rel (amb : overlap_ambiguity X R S) (s : semigroup_partial_order (free_monoid X)) : Prop := (ring_quot.mk_ring_hom (compatibility_rel X R S (amb.A*amb.B*amb.C) s)) (amb.σ.val.2*((free_algebra.basis_free_monoid R X) amb.C) - ((free_algebra.basis_free_monoid R X) amb.A)*amb.τ.val.2) = 0
+
+--- This predicate is the statement that an inclusion ambiguity is resolvable rel a given partial order. Instead of saying something is in an ideal, we say it is zero in a quotient.
+def inclusion_resolvable_rel (amb : overlap_ambiguity X R S) (s : semigroup_partial_order (free_monoid X)) : Prop := (ring_quot.mk_ring_hom (compatibility_rel X R S (amb.A*amb.B*amb.C) s)) (((free_algebra.basis_free_monoid R X) amb.A)*(amb.σ.val.2)*((free_algebra.basis_free_monoid R X) amb.C) - amb.τ.val.2) = 0
+
+
+
