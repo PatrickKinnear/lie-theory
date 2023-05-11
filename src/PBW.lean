@@ -89,7 +89,7 @@ noncomputable def  r_s : ru_submodule X R S → irr X R S:=
 begin
 intro a,
 cases a.property,
-apply  exists.classical_rec_on right,
+apply exists.classical_rec_on right,
 intros x hx,
 exact x,
 -- try to use the choose tactic here!
