@@ -6,6 +6,7 @@ import linear_algebra.basis
 import init.algebra.order
 import data.fin.basic
 import algebra.module.linear_map
+import algebra.ring_quot
 
 noncomputable theory
 open_locale classical
@@ -159,3 +160,16 @@ begin
     exact lt_irrefl a,
   },
 end
+
+--- This is to  pick out when B*(W_σ)*C < A, which is used to define the relation which specifies when an ambiguity is resolvable rel a partial order.
+def compatibility_pre_rel (A : free_monoid X) (_ : semigroup_partial_order (free_monoid X)) (S : reduction_system X R): (free_monoid X) → (free_monoid X) → S.set → Prop := λ B C σ, B*(σ.val.1)*C < A
+
+def compatibility_pre_rel_doubled (A : free_monoid X) (_ : semigroup_partial_order (free_monoid X)) (S : reduction_system X R): (free_monoid X) → (free_monoid X) → S.set → (free_monoid X) → (free_monoid X) → S.set → Prop := λ B C σ D E τ, B*(σ.val.1)*C < A ∧ B = D ∧ C = E ∧ σ = τ
+
+def sandwich_monoid_element : (free_monoid X) → (free_monoid X) → S.set → free_algebra R X := λ B C σ, 
+
+def compatibility_rel (A : free_monoid X): (free_algebra R X) → (free_algebra R X) → Prop :=  
+
+def rel_quotient (A : free_monoid X) : Type* := ring_quot (free_algebra R X) ()
+
+def overlap_resolvable_rel (amb : overlap_ambiguity X R S) ( _ : semigroup_partial_order (free_monoid X)) : Prop := ,
