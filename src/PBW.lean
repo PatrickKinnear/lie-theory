@@ -7,6 +7,7 @@ import init.algebra.order
 import data.fin.basic
 import algebra.module.linear_map
 import algebra.ring_quot
+import logic.relation
 
 noncomputable theory
 open_locale classical
@@ -164,12 +165,17 @@ end
 --- This is to  pick out when B*(W_σ)*C < A, which is used to define the relation which specifies when an ambiguity is resolvable rel a partial order.
 def compatibility_pre_rel (A : free_monoid X) (_ : semigroup_partial_order (free_monoid X)) (S : reduction_system X R): (free_monoid X) → (free_monoid X) → S.set → Prop := λ B C σ, B*(σ.val.1)*C < A
 
-def compatibility_pre_rel_doubled (A : free_monoid X) (_ : semigroup_partial_order (free_monoid X)) (S : reduction_system X R): (free_monoid X) → (free_monoid X) → S.set → (free_monoid X) → (free_monoid X) → S.set → Prop := λ B C σ D E τ, B*(σ.val.1)*C < A ∧ B = D ∧ C = E ∧ σ = τ
+def compatibility_pre_rel_doubled (A : free_monoid X) (_ : semigroup_partial_order (free_monoid X)) (S : reduction_system X R): ((free_monoid X) × (free_monoid X) × S.set) → ((free_monoid X) × (free_monoid X) × S.set) → Prop := λ Y Z, Y.1*(Y.2.2.val.1)*Y.2.1 < A ∧ Y = Z
 
-def sandwich_monoid_element : (free_monoid X) → (free_monoid X) → S.set → free_algebra R X := λ B C σ, 
+--- The maps below are needed to push the compatibility pre-relation to the algebra.
+def sandwich_monoid_element : ((free_monoid X) × (free_monoid X) × S.set) →  free_algebra R X := λ Y, ((free_algebra.basis_free_monoid R X) Y.1)*((free_algebra.basis_free_monoid R X) Y.2.2.val.1)*((free_algebra.basis_free_monoid R X) Y.2.1) 
 
-def compatibility_rel (A : free_monoid X): (free_algebra R X) → (free_algebra R X) → Prop :=  
+def sandwich_algebra_element : ((free_monoid X) × (free_monoid X) × S.set) → free_algebra R X := λ Y, ((free_algebra.basis_free_monoid R X) Y.1)*(Y.2.2.val.2)*((free_algebra.basis_free_monoid R X) Y.2.1) 
 
-def rel_quotient (A : free_monoid X) : Type* := ring_quot (free_algebra R X) ()
+-- This relation on the free algebra defines a quotient, used to speak of when an overlap is resolvable rel a partial order
+def compatibility_rel (A : free_monoid X) (s : semigroup_partial_order (free_monoid X)): (free_algebra R X) → (free_algebra R X) → Prop :=  relation.map (compatibility_pre_rel_doubled X R A s S)(sandwich_monoid_element X R S) (sandwich_algebra_element X R S)
+
+-- This quotient is used to talk of when an overlap is resolvable rel a partial order (in place of using an ideal which is not defined for noncommutative rings yet)
+def rel_quotient (A : free_monoid X) (s : semigroup_partial_order (free_monoid X)): Type* := ring_quot (compatibility_rel X R S A s)
 
 def overlap_resolvable_rel (amb : overlap_ambiguity X R S) ( _ : semigroup_partial_order (free_monoid X)) : Prop := ,
