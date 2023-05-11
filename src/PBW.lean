@@ -25,33 +25,29 @@ structure reduction_system :=
 variable (S : reduction_system X R)
 
 --Inclusion of free monoid into free algebra
-def inc_free_monoid_free_alg : free_monoid X →* free_algebra R X:= free_monoid.lift (free_algebra.ι R)
+-- def inc_free_monoid_free_alg : free_monoid X →* free_algebra R X
+-- := free_monoid.lift (free_algebra.ι R)
+
 
 variable q : free_algebra R X
 
 --Define reduction on basis elements
-def reduction_on_basis (σ : S.set) (A B : free_monoid X) : free_monoid X → free_algebra R X := 
+def reduction_on_basis (σ : S.set) (A B : free_monoid X) : 
+free_monoid X → free_algebra R X := 
 λ x, if (x=A*σ.val.1*B) then 
-(inc_free_monoid_free_alg X R A)*σ.val.2*(inc_free_monoid_free_alg X R B) 
-else (inc_free_monoid_free_alg X R x)
+(free_algebra.basis_free_monoid R X A)*σ.val.2*((free_algebra.basis_free_monoid R X) B) 
+else ((free_algebra.basis_free_monoid R X) x)
+
+--This is just short for free_algebra.basis_free_monoid R X
 
 
-
--- begin
---   intro x,
---   by_cases x = A*σ.val.1*B,
---   {
---     exact (inc_free_monoid_free_alg X R A)*σ.val.2*(inc_free_monoid_free_alg X R B),
---   },
---   {
---     exact (inc_free_monoid_free_alg X R x),
---   },
--- end
-
-def reduction (σ : S.set) (A B: free_monoid X) : free_algebra R X →ₗ[R] free_algebra R X := basis.constr (free_algebra.basis_free_monoid R X) R (reduction_on_basis X R S σ A B)
+def reduction (σ : S.set) (A B: free_monoid X) : free_algebra R X →ₗ[R] free_algebra R X 
+:= basis.constr (free_algebra.basis_free_monoid R X) R (reduction_on_basis X R S σ A B)
 
 --Set of irreducible polynomials
-def irr_set : set (free_algebra R X) := { a : free_algebra R X | ∀ σ : S.set, ∀ A : free_monoid X, ∀ B : free_monoid X, reduction X R S σ A B a = a}
+def irr_set : set (free_algebra R X) := 
+{ a : free_algebra R X | ∀ σ : S.set, ∀ A : free_monoid X, ∀ B : 
+free_monoid X, reduction X R S σ A B a = a}
 
 def irr : submodule R (free_algebra R X) :=
 ⟨irr_set X R S, by sorry, by sorry, by sorry⟩
@@ -69,7 +65,8 @@ structure inclusion_ambiguity :=
 (inclusion : τ.val.1 = A*σ.val.1*B)
 
 --Sequence of reductions
-def reductions : set (free_algebra R X →ₗ[R] free_algebra R X) := { (reduction X R S triple.1 triple.2.1 triple.2.2) | triple : S.set × free_monoid X ×  free_monoid X }
+def reductions : set (free_algebra R X →ₗ[R] free_algebra R X) := 
+{ (reduction X R S triple.1 triple.2.1 triple.2.2) | triple : S.set × free_monoid X ×  free_monoid X }
 
 variable n : ℕ 
 variable r : fin n → reductions X R S
@@ -82,10 +79,12 @@ induction n,
 end
 
 --This seems unnecessarily set-dependent?
-def final_on (r : fin n → reductions X R S) (a : free_algebra R X) : Prop := ((compose X R S n r) a) ∈ (irr X R S)
+def final_on (r : fin n → reductions X R S) (a : free_algebra R X) : 
+Prop := ((compose X R S n r) a) ∈ (irr X R S)
 
 --Not the most elegant handling of infinite sequences?
-def reduction_finite (a : free_algebra R X) : Prop := ∀ r : ℕ → reductions X R S, ∃ N : ℕ, ∀ n > N, (compose X R S n (r ∘ (fin.coe_embedding))) a = (compose X R S (n-1) (r ∘ (fin.coe_embedding))) a ∧ (compose X R S (n-1) (r ∘ (fin.coe_embedding))) a ∈ (irr X R S)
+def reduction_finite (a : free_algebra R X) : 
+Prop := ∀ r : ℕ → reductions X R S, ∃ N : ℕ, ∀ n > N, (compose X R S n (r ∘ (fin.coe_embedding))) a = (compose X R S (n-1) (r ∘ (fin.coe_embedding))) a ∧ (compose X R S (n-1) (r ∘ (fin.coe_embedding))) a ∈ (irr X R S)
 
 def rf_submodule : submodule R (free_algebra R X) :=
 ⟨{a : free_algebra R X | reduction_finite X R S a}, by sorry, by sorry, by sorry⟩
@@ -97,13 +96,14 @@ def reduction_unique (a : free_algebra R X) : Prop := reduction_finite X R S a �
 def ru_submodule : submodule R (free_algebra R X) :=
 ⟨{a : free_algebra R X | reduction_unique X R S a}, by sorry, by sorry, by sorry⟩
 
-def r_s : ru_submodule X R S → irr X R S:=
+noncomputable def  r_s : ru_submodule X R S → irr X R S:=
 begin
 intro a,
-have h : reduction_unique X R S a,
-sorry,
-cases h,
---need to get  x out of h_right... then make it linear!
+cases a.property,
+apply exists.classical_rec_on right,
+intros x hx,
+exact x,
+-- try to use the choose tactic here!
 end
 
 --Partial order
@@ -111,11 +111,13 @@ class semigroup_partial_order (α : Type) [semigroup α] extends partial_order �
 (semigroup_condition : ∀ b b': α, b≤b' → ∀ a c: α, a*b*c ≤ a*b'*c)
 
 --Extracting basis terms in some element of free algebra
-def basis_terms (a : free_algebra R X) : set (free_monoid X) := { m : free_monoid X | (free_algebra.basis_free_monoid R X).repr a m ≠ 0}
+def basis_terms (a : free_algebra R X) : set (free_monoid X) := 
+{ m : free_monoid X | (free_algebra.basis_free_monoid R X).repr a m ≠ 0}
 
 
 -- This takes as argument a semigroup for now, so need to pass <X> as argument
-class compatible_semigroup_partial_order (S : reduction_system X R) extends semigroup_partial_order (free_monoid X):=
+class compatible_semigroup_partial_order (S : reduction_system X R) 
+extends semigroup_partial_order (free_monoid X):=
 (compatible : ∀ σ : S.set, ∀ u ∈ basis_terms X R (σ.val.2), u<σ.val.1)
 
 -- This takes as argument a reduction system S (which already includes X and R)
@@ -125,6 +127,15 @@ by_cases A.overlap, {
   ∃ f : reductions X R S,  (compose f) (reduction Amb.σ 1 1) Amb.C 
 }, {},
 end
+
+lemma obvious (σ : S.set) (A B x: free_monoid X)(h: ¬ x=A*σ.val.1*B):
+ ((free_algebra.basis_free_monoid R X) x)=(reduction_on_basis X R S σ A B) (x):=
+begin
+  unfold reduction_on_basis,
+  split_ifs,
+  refl,
+end
+
 
 lemma observation (S : reduction_system X R)[compatible_semigroup_partial_order X R S]
 (A B : free_monoid X)(σ : S.set): ∀ a : free_monoid X, ∀ u ∈ (basis_terms X R)( (reduction_on_basis X R S σ A B) a),  ¬ u > a:=
