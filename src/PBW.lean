@@ -55,6 +55,9 @@ free_monoid X, reduction X R S σ A B a = a}
 def irr : submodule R (free_algebra R X) :=
 ⟨irr_set X R S, by sorry, by sorry, by sorry⟩
 
+def irr_monomials : set (free_monoid X) :=
+{ m : free_monoid X | ∀ σ : S.set, ∀ A B: free_monoid X, A*σ.val.1*B ≠ m } 
+
 --Ambiguities
 
 structure overlap_ambiguity :=
@@ -224,4 +227,12 @@ end
 lemma compatible_implies_all_resolvable_are_resolvable_rel (s : compatible_semigroup_partial_order X R S) (amb: ambiguity X R S): ambiguity_is_resolvable X R S amb → ambiguity_resolvable_rel X R S amb s.to_semigroup_partial_order := by sorry
 
 
+def diamond_lemma_prop_1 (s: compatible_semigroup_partial_order X R S) : Prop :=   ∀ amb: ambiguity X R S, ambiguity_is_resolvable X R S amb 
+
+def diamond_lemma_prop_2 (s: compatible_semigroup_partial_order X R S) : Prop :=  ∀ amb: ambiguity X R S, ambiguity_resolvable_rel X R S amb s.to_semigroup_partial_order   
+
+def diamond_lemma_prop_3 (s: compatible_semigroup_partial_order X R S) : Prop := ∀ x : free_algebra R X, reduction_unique X R S x
+
+def diamond_lemma_prop_4 (s: compatible_semigroup_partial_order X R S) : Prop := 
+f (irr_monomials X R S → quotient(...)) : basis (irr_monomials X R S) R quotient(...) 
 
