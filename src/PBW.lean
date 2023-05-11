@@ -64,7 +64,7 @@ structure overlap_ambiguity :=
 
 structure inclusion_ambiguity :=
 (σ τ : S.set)
-(A B : free_monoid X)
+(A B C : free_monoid X)
 (inclusion : τ.val.1 = A*σ.val.1*B)
 
 structure ambiguity:=
@@ -132,13 +132,23 @@ extends semigroup_partial_order (free_monoid X):=
 (compatible : ∀ σ : S.set, ∀ u ∈ basis_terms X R (σ.val.2), u<σ.val.1)
 
 -- This takes as argument a reduction system S (which already includes X and R)
-def ambiguity_is_resolvable (Amb : (inclusion_ambiguity X R S) ∨ overlap_ambig ): Prop :=
+def ambiguity_is_resolvable (amb : ambiguity X R S): Prop :=
 begin
-by_cases A.overlap, {
-  ∃ f : reductions X R S,  (compose f) (reduction Amb.σ 1 1) Amb.C 
-}, {},
+by_cases amb.overlap_not_inclusion = true,
+{exact ∃ f g : reductions X R S, f((amb.σ.val.2)*((free_algebra.basis_free_monoid R X) amb.C)) = g(((free_algebra.basis_free_monoid R X) amb.A)*(amb.τ.val.2))},
+{{exact ∃ f g : reductions X R S, f(((free_algebra.basis_free_monoid R X) amb.A)*(amb.σ.val.2)*((free_algebra.basis_free_monoid R X) amb.C)) = g(amb.τ.val.2)}}
 end
 
+variables amb : ambiguity X R S
+#check (∃ f g : reductions X R S, f((amb.σ.val.2)*((free_algebra.basis_free_monoid R X) amb.C)) = 0)
+
+lemma obvious (σ : S.set) (A B x: free_monoid X)(h: ¬ x=A*σ.val.1*B):
+ ((free_algebra.basis_free_monoid R X) x)=(reduction_on_basis X R S σ A B) (x):=
+begin
+  unfold reduction_on_basis,
+  split_ifs,
+  refl,
+end
 
 
 lemma observation (S : reduction_system X R)[compatible_semigroup_partial_order X R S]
@@ -210,7 +220,14 @@ def overlap_resolvable_rel (amb : overlap_ambiguity X R S) (s : semigroup_partia
 --- This predicate is the statement that an inclusion ambiguity is resolvable rel a given partial order. Instead of saying something is in an ideal, we say it is zero in a quotient.
 def inclusion_resolvable_rel (amb : overlap_ambiguity X R S) (s : semigroup_partial_order (free_monoid X)) : Prop := (ring_quot.mk_ring_hom (compatibility_rel X R S (amb.A*amb.B*amb.C) s)) (((free_algebra.basis_free_monoid R X) amb.A)*(amb.σ.val.2)*((free_algebra.basis_free_monoid R X) amb.C) - amb.τ.val.2) = 0
 
-lemma compatible_implies_all_resolvable_are_resolvable_rel (s : compatible_semigroup_partial_order X R S) : 
+def ambiguity_resolvable_rel (amb: ambiguity X R S) (s : semigroup_partial_order (free_monoid X)) : Prop := 
+begin
+by_cases amb.overlap_not_inclusion = true,
+{exact (ring_quot.mk_ring_hom (compatibility_rel X R S (amb.A*amb.B*amb.C) s)) (amb.σ.val.2*((free_algebra.basis_free_monoid R X) amb.C) - ((free_algebra.basis_free_monoid R X) amb.A)*amb.τ.val.2) = 0},
+{exact (ring_quot.mk_ring_hom (compatibility_rel X R S (amb.A*amb.B*amb.C) s)) (((free_algebra.basis_free_monoid R X) amb.A)*(amb.σ.val.2)*((free_algebra.basis_free_monoid R X) amb.C) - amb.τ.val.2) = 0}
+end
+
+lemma compatible_implies_all_resolvable_are_resolvable_rel (s : compatible_semigroup_partial_order X R S) (amb: ambiguity X R S): ambiguity_is_resolvable X R S amb → ambiguity_resolvable_rel X R S amb s.to_semigroup_partial_order := by sorry
 
 
 
