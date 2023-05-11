@@ -16,7 +16,7 @@ open set
 --We need to prove the Diamond Lemma!
 
 variables (X : Type) 
-variables (R: Type) [comm_ring R]
+variables (R: Type) [comm_ring R][ne_zero (1 : R)]
 
 structure reduction_system :=
 (set : set (free_monoid X × free_algebra R X))
@@ -148,17 +148,34 @@ begin
     sorry,
   },
   {
-    have step₂ : basis_terms X R ((reduction_on_basis X R S σ A B) a) = {a},
+    unfold basis_terms at hu,
+    rw set.mem_set_of_eq at hu,
+    have step₁ : reduction_on_basis X R S σ A B a = free_algebra.basis_free_monoid R X a,
     {
-      sorry,
+      unfold reduction_on_basis,
+      split_ifs,
+      refl,
     },
-    have step₃ : u = a,
+    rw step₁ at hu,
+    simp[basis.repr_self] at hu,
+    have step₂ : u ∈ (finsupp.single a (1 : R)).support,
     {
-      rw step₂ at hu,
+      simp[finsupp.mem_support_iff],
       exact hu,
     },
-    rw step₃,
-    exact lt_irrefl a,
+    rw finsupp.support_single_ne_zero at step₂,
+    {
+      have equality : u = a,
+      {
+        simp at step₂,
+        exact step₂,
+      },
+      rw equality,
+      exact lt_irrefl a,
+    },
+    {
+      simp,
+    },
   },
 end
 
