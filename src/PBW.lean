@@ -223,5 +223,18 @@ end
 
 lemma compatible_implies_all_resolvable_are_resolvable_rel (s : compatible_semigroup_partial_order X R S) (amb: ambiguity X R S): ambiguity_is_resolvable X R S amb → ambiguity_resolvable_rel X R S amb s.to_semigroup_partial_order := by sorry
 
+---The below relation on S will be pushed to R to give the relations defining the ideal I we take the quotient by.
+def defining_pre_rel (S : reduction_system X R) : S.set → S.set → Prop := λ σ τ, σ = τ
+
+--- Now we give maps S → k<X> which allow us to define the relation on k<X> to quotient by
+def rs_to_alg_left (S : reduction_system X R) : S.set → (free_algebra R X) := λ σ, (free_algebra.basis_free_monoid R X) σ.val.1
+
+def rs_to_alg_right (S : reduction_system X R) : S.set → (free_algebra R X) := λ σ, σ.val.2
+
+--- We push the relation on S along the above maps to R.
+def defining_rel (S : reduction_system X R) : free_algebra R X → free_algebra R X → Prop := relation.map (defining_pre_rel X R S) (rs_to_alg_left X R S) (rs_to_alg_right X R S)
+
+--- This is the quotient k<X>/I, for I the ideal given by S. Need to fix the type here!
+def quotient_by_system (S : reduction_system X R) : Type* := ring_quot (defining_rel X R S)
 
 
