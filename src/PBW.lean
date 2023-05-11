@@ -22,6 +22,8 @@ structure reduction_system :=
 (set : set (free_monoid X × free_algebra R X))
 (nondegeneracy: ∀ p : set, free_monoid.lift (free_algebra.ι R) p.val.1 ≠ p.val.2 )
 
+
+
 ---fix reduction_system, notion of reduction, and define irreducible.
 
 variable (S : reduction_system X R)
@@ -30,21 +32,21 @@ variable (S : reduction_system X R)
 -- def inc_free_monoid_free_alg : free_monoid X →* free_algebra R X
 -- := free_monoid.lift (free_algebra.ι R)
 
-
+notation `bs`:= free_algebra.basis_free_monoid
 variable q : free_algebra R X
 
 --Define reduction on basis elements
 def reduction_on_basis (σ : S.set) (A B : free_monoid X) : 
 free_monoid X → free_algebra R X := 
 λ x, if (x=A*σ.val.1*B) then 
-(free_algebra.basis_free_monoid R X A)*σ.val.2*((free_algebra.basis_free_monoid R X) B) 
-else ((free_algebra.basis_free_monoid R X) x)
+(bs R X A)*σ.val.2*((bs R X) B) 
+else ((bs R X) x)
 
---This is just short for free_algebra.basis_free_monoid R X
+--This is just short for bs R X
 
 
 def reduction (σ : S.set) (A B: free_monoid X) : free_algebra R X →ₗ[R] free_algebra R X 
-:= basis.constr (free_algebra.basis_free_monoid R X) R (reduction_on_basis X R S σ A B)
+:= basis.constr (bs R X) R (reduction_on_basis X R S σ A B)
 
 --Set of irreducible polynomials
 def irr_set : set (free_algebra R X) := 
@@ -122,7 +124,7 @@ class semigroup_partial_order (α : Type) [semigroup α] extends partial_order �
 
 --Extracting basis terms in some element of free algebra
 def basis_terms (a : free_algebra R X) : set (free_monoid X) := 
-{ m : free_monoid X | (free_algebra.basis_free_monoid R X).repr a m ≠ 0}
+{ m : free_monoid X | (bs R X).repr a m ≠ 0}
 
 
 -- This takes as argument a semigroup for now, so need to pass <X> as argument
@@ -151,7 +153,8 @@ end
 
 
 lemma observation (S : reduction_system X R)[compatible_semigroup_partial_order X R S]
-(A B : free_monoid X)(σ : S.set): ∀ a : free_monoid X, ∀ u ∈ (basis_terms X R)( (reduction_on_basis X R S σ A B) a),  ¬ u > a:=
+(A B : free_monoid X)(σ : S.set): ∀ a : free_monoid X, ∀ u ∈ (basis_terms X R)
+( (reduction_on_basis X R S σ A B) a),  ¬ u > a:=
 begin
   intros a u hu,
   by_cases a = A*σ.val.1*B,
@@ -161,7 +164,7 @@ begin
   {
     unfold basis_terms at hu,
     rw set.mem_set_of_eq at hu,
-    have step₁ : reduction_on_basis X R S σ A B a = free_algebra.basis_free_monoid R X a,
+    have step₁ : reduction_on_basis X R S σ A B a = bs R X a,
     {
       unfold reduction_on_basis,
       split_ifs,
