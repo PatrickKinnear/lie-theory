@@ -6,6 +6,9 @@ import linear_algebra.basis
 import init.algebra.order
 import data.fin.basic
 import algebra.module.linear_map
+
+noncomputable theory
+open_locale classical
 open set
 
 --We need to prove the Diamond Lemma!
@@ -24,20 +27,28 @@ variable (S : reduction_system X R)
 --Inclusion of free monoid into free algebra
 def inc_free_monoid_free_alg : free_monoid X →* free_algebra R X:= free_monoid.lift (free_algebra.ι R)
 
---Define reduction on basis elements
-noncomputable def reduction_on_basis (σ : S.set) (A B : free_monoid X) : free_monoid X → free_algebra R X := 
-begin
-  intro x,
-  by_cases x = A*σ.val.1*B,
-  {
-    exact (inc_free_monoid_free_alg X R A)*σ.val.2*(inc_free_monoid_free_alg X R B),
-  },
-  {
-    exact (inc_free_monoid_free_alg X R x),
-  },
-end
+variable q : free_algebra R X
 
-noncomputable def reduction (σ : S.set) (A B: free_monoid X) : free_algebra R X →ₗ[R] free_algebra R X := basis.constr (free_algebra.basis_free_monoid R X) R (reduction_on_basis X R S σ A B)
+--Define reduction on basis elements
+def reduction_on_basis (σ : S.set) (A B : free_monoid X) : free_monoid X → free_algebra R X := 
+λ x, if (x=A*σ.val.1*B) then 
+(inc_free_monoid_free_alg X R A)*σ.val.2*(inc_free_monoid_free_alg X R B) 
+else (inc_free_monoid_free_alg X R x)
+
+
+
+-- begin
+--   intro x,
+--   by_cases x = A*σ.val.1*B,
+--   {
+--     exact (inc_free_monoid_free_alg X R A)*σ.val.2*(inc_free_monoid_free_alg X R B),
+--   },
+--   {
+--     exact (inc_free_monoid_free_alg X R x),
+--   },
+-- end
+
+def reduction (σ : S.set) (A B: free_monoid X) : free_algebra R X →ₗ[R] free_algebra R X := basis.constr (free_algebra.basis_free_monoid R X) R (reduction_on_basis X R S σ A B)
 
 --Set of irreducible polynomials
 def irr_set : set (free_algebra R X) := { a : free_algebra R X | ∀ σ : S.set, ∀ A : free_monoid X, ∀ B : free_monoid X, reduction X R S σ A B a = a}
@@ -60,7 +71,8 @@ structure inclusion_ambiguity :=
 --Sequence of reductions
 def reductions : set (free_algebra R X →ₗ[R] free_algebra R X) := { (reduction X R S triple.1 triple.2.1 triple.2.2) | triple : S.set × free_monoid X ×  free_monoid X }
 
-variable n : ℕ
+variable n : ℕ 
+variable r : fin n → reductions X R S
 
 def compose (f : fin n → reductions X R S): (free_algebra R X →ₗ[R] free_algebra R X) :=
 begin
@@ -101,6 +113,7 @@ class semigroup_partial_order (α : Type) [semigroup α] extends partial_order �
 --Extracting basis terms in some element of free algebra
 def basis_terms (a : free_algebra R X) : set (free_monoid X) := { m : free_monoid X | (free_algebra.basis_free_monoid R X).repr a m ≠ 0}
 
+
 -- This takes as argument a semigroup for now, so need to pass <X> as argument
 class compatible_semigroup_partial_order (S : reduction_system X R) extends semigroup_partial_order (free_monoid X):=
 (compatible : ∀ σ : S.set, ∀ u ∈ basis_terms X R (σ.val.2), u<σ.val.1)
@@ -113,19 +126,26 @@ by_cases A.overlap, {
 }, {},
 end
 
-variable x : Type
-#check λ x, x
-
 
 lemma observation (S : reduction_system X R)[compatible_semigroup_partial_order X R S]
 (A B : free_monoid X)(σ : S.set): ∀ a : free_monoid X, ∀ u ∈ (basis_terms X R)( (reduction X R S σ A B) (inc_free_monoid_free_alg X R a)),  ¬ u > a:=
 begin
   intros a u hu,
+  let iₐ:=(inc_free_monoid_free_alg X R a),
   by_cases a=A*σ.val.1*B,
   {
     sorry,
   },
   {
-    sorry,
+    have step: u=a,
+    {
+      have step₂ : reduction X R S σ A B iₐ = iₐ,
+      {
+        
+      },
+
+    },
+    rw step,
+    exact lt_irrefl a,
   },
 end
