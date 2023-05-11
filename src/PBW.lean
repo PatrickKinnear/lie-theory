@@ -123,7 +123,7 @@ extends semigroup_partial_order (free_monoid X):=
 (compatible : ∀ σ : S.set, ∀ u ∈ basis_terms X R (σ.val.2), u<σ.val.1)
 
 -- This takes as argument a reduction system S (which already includes X and R)
-def ambiguity_is_resolvable (Amb : inclusion_ambiguity or ): Prop :=
+def ambiguity_is_resolvable (Amb : (inclusion_ambiguity X R S) ∨ overlap_ambig ): Prop :=
 begin
 by_cases A.overlap, {
   ∃ f : reductions X R S,  (compose f) (reduction Amb.σ 1 1) Amb.C 
@@ -192,7 +192,7 @@ def sandwich_algebra_element : ((free_monoid X) × (free_monoid X) × S.set) →
 -- This relation on the free algebra defines a quotient, used to speak of when an overlap is resolvable rel a partial order
 def compatibility_rel (A : free_monoid X) (s : semigroup_partial_order (free_monoid X)): (free_algebra R X) → (free_algebra R X) → Prop :=  relation.map (compatibility_pre_rel_doubled X R A s S)(sandwich_monoid_element X R S) (sandwich_algebra_element X R S)
 
--- This quotient is used to talk of when an overlap is resolvable rel a partial order (in place of using an ideal which is not defined for noncommutative rings yet)
+-- This quotient is used to talk of when an overlap is resolvable rel a partial order (in place of using an ideal which is not defined for noncommutative rings yet). Fix the type here to be more specific!
 def rel_quotient (A : free_monoid X) (s : semigroup_partial_order (free_monoid X)): Type* := ring_quot (compatibility_rel X R S A s)
 
 --- This predicate is the statement that an overlap ambiguity is resolvable rel a given partial order. Instead of saying something is in an ideal, we say it is zero in a quotient.
@@ -200,6 +200,8 @@ def overlap_resolvable_rel (amb : overlap_ambiguity X R S) (s : semigroup_partia
 
 --- This predicate is the statement that an inclusion ambiguity is resolvable rel a given partial order. Instead of saying something is in an ideal, we say it is zero in a quotient.
 def inclusion_resolvable_rel (amb : overlap_ambiguity X R S) (s : semigroup_partial_order (free_monoid X)) : Prop := (ring_quot.mk_ring_hom (compatibility_rel X R S (amb.A*amb.B*amb.C) s)) (((free_algebra.basis_free_monoid R X) amb.A)*(amb.σ.val.2)*((free_algebra.basis_free_monoid R X) amb.C) - amb.τ.val.2) = 0
+
+lemma compatible_implies_all_resolvable_are_resolvable_rel (s : compatible_semigroup_partial_order X R S) : 
 
 
 
