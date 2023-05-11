@@ -257,6 +257,8 @@ def diamond_lemma_prop_2 (s: compatible_semigroup_partial_order X R S) : Prop :=
 
 def diamond_lemma_prop_3 (s: compatible_semigroup_partial_order X R S) : Prop := ∀ x : free_algebra R X, reduction_unique X R S x
 
-def diamond_lemma_prop_4 (s: compatible_semigroup_partial_order X R S) : Prop := 
-f (irr_monomials X R S → quotient(...)) : basis (irr_monomials X R S) R quotient(...) 
+def canonical_inclusion (S : reduction_system X R) : irr_monomials X R S → quotient_by_system X R S := by sorry
+
+def diamond_lemma_prop_4 (s: compatible_semigroup_partial_order X R S) : Prop := (
+canonical_inclusion X R S : basis (irr_monomials X R S) R quotient_by_system X R S )
 
