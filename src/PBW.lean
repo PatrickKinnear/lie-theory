@@ -96,13 +96,14 @@ def reduction_unique (a : free_algebra R X) : Prop := reduction_finite X R S a �
 def ru_submodule : submodule R (free_algebra R X) :=
 ⟨{a : free_algebra R X | reduction_unique X R S a}, by sorry, by sorry, by sorry⟩
 
-def r_s : ru_submodule X R S → irr X R S:=
+noncomputable def  r_s : ru_submodule X R S → irr X R S:=
 begin
 intro a,
-have h : reduction_unique X R S a,
-sorry,
-cases h,
---need to get  x out of h_right... then make it linear!
+cases a.property,
+apply exists.classical_rec_on right,
+intros x hx,
+exact x,
+-- try to use the choose tactic here!
 end
 
 --Partial order
