@@ -42,7 +42,6 @@ free_monoid X → free_algebra R X :=
 (bs R X A)*σ.val.2*((bs R X) B) 
 else ((bs R X) x)
 
---This is just short for bs R X
 
 
 def reduction (σ : S.set) (A B: free_monoid X) : free_algebra R X →ₗ[R] free_algebra R X 
