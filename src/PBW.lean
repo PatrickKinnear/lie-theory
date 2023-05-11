@@ -22,6 +22,8 @@ structure reduction_system :=
 (set : set (free_monoid X × free_algebra R X))
 (nondegeneracy: ∀ p : set, free_monoid.lift (free_algebra.ι R) p.val.1 ≠ p.val.2 )
 
+
+
 ---fix reduction_system, notion of reduction, and define irreducible.
 
 variable (S : reduction_system X R)
@@ -138,17 +140,11 @@ by_cases A.overlap, {
 }, {},
 end
 
-lemma obvious (σ : S.set) (A B x: free_monoid X)(h: ¬ x=A*σ.val.1*B):
- ((bs R X) x)=(reduction_on_basis X R S σ A B) (x):=
-begin
-  unfold reduction_on_basis,
-  split_ifs,
-  refl,
-end
 
 
 lemma observation (S : reduction_system X R)[compatible_semigroup_partial_order X R S]
-(A B : free_monoid X)(σ : S.set): ∀ a : free_monoid X, ∀ u ∈ (basis_terms X R)( (reduction_on_basis X R S σ A B) a),  ¬ u > a:=
+(A B : free_monoid X)(σ : S.set): ∀ a : free_monoid X, ∀ u ∈ (basis_terms X R)
+( (reduction_on_basis X R S σ A B) a),  ¬ u > a:=
 begin
   intros a u hu,
   by_cases a = A*σ.val.1*B,
