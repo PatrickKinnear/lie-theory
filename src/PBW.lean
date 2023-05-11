@@ -25,12 +25,14 @@ structure reduction_system :=
 variable (S : reduction_system X R)
 
 --Inclusion of free monoid into free algebra
-def inc_free_monoid_free_alg : free_monoid X →* free_algebra R X:= free_monoid.lift (free_algebra.ι R)
+def inc_free_monoid_free_alg : free_monoid X →* free_algebra R X
+:= free_monoid.lift (free_algebra.ι R)
 
 variable q : free_algebra R X
 
 --Define reduction on basis elements
-def reduction_on_basis (σ : S.set) (A B : free_monoid X) : free_monoid X → free_algebra R X := 
+def reduction_on_basis (σ : S.set) (A B : free_monoid X) : 
+free_monoid X → free_algebra R X := 
 λ x, if (x=A*σ.val.1*B) then 
 (inc_free_monoid_free_alg X R A)*σ.val.2*(inc_free_monoid_free_alg X R B) 
 else (inc_free_monoid_free_alg X R x)
@@ -48,10 +50,13 @@ else (inc_free_monoid_free_alg X R x)
 --   },
 -- end
 
-def reduction (σ : S.set) (A B: free_monoid X) : free_algebra R X →ₗ[R] free_algebra R X := basis.constr (free_algebra.basis_free_monoid R X) R (reduction_on_basis X R S σ A B)
+def reduction (σ : S.set) (A B: free_monoid X) : free_algebra R X →ₗ[R] free_algebra R X 
+:= basis.constr (free_algebra.basis_free_monoid R X) R (reduction_on_basis X R S σ A B)
 
 --Set of irreducible polynomials
-def irr_set : set (free_algebra R X) := { a : free_algebra R X | ∀ σ : S.set, ∀ A : free_monoid X, ∀ B : free_monoid X, reduction X R S σ A B a = a}
+def irr_set : set (free_algebra R X) := 
+{ a : free_algebra R X | ∀ σ : S.set, ∀ A : free_monoid X, ∀ B : 
+free_monoid X, reduction X R S σ A B a = a}
 
 def irr : submodule R (free_algebra R X) :=
 ⟨irr_set X R S, by sorry, by sorry, by sorry⟩
@@ -126,6 +131,8 @@ by_cases A.overlap, {
 }, {},
 end
 
+lemma obvious : 
+
 
 lemma observation (S : reduction_system X R)[compatible_semigroup_partial_order X R S]
 (A B : free_monoid X)(σ : S.set): ∀ a : free_monoid X, ∀ u ∈ (basis_terms X R)( (reduction X R S σ A B) (inc_free_monoid_free_alg X R a)),  ¬ u > a:=
@@ -141,7 +148,9 @@ begin
     {
       have step₂ : reduction X R S σ A B iₐ = iₐ,
       {
-        
+        unfold reduction,
+        split_ifs,
+
       },
 
     },
