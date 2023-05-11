@@ -66,6 +66,14 @@ structure inclusion_ambiguity :=
 (A B : free_monoid X)
 (inclusion : τ.val.1 = A*σ.val.1*B)
 
+structure ambiguity:=
+(σ τ : S.set)
+(A B C: free_monoid X)
+(overlap_not_inclusion : bool)
+(ambiguity_condition : if overlap_not_inclusion 
+  then σ.val.1 = A*B ∧ τ.val.1 = B*C 
+  else σ.val.1 = B ∧ τ.val.1 = A*B*C )
+
 --Sequence of reductions
 def reductions : set (free_algebra R X →ₗ[R] free_algebra R X) := 
 { (reduction X R S triple.1 triple.2.1 triple.2.2) | triple : S.set × free_monoid X ×  free_monoid X }
