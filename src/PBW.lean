@@ -161,18 +161,29 @@ begin
   intros a u hu,
   by_cases a = A*σ.val.1*B,
   {
-    sorry,
+    have step₁: ∀ v∈ (basis_terms X R) σ.val.2, A*v*B≤A*σ.val.1*B,
+    {
+      intros v hv,
+      apply _inst_3.semigroup_condition v σ.val.1,
+      exact (le_not_le_of_lt(_inst_3.compatible σ v hv)).1,      
+    },
+    unfold reduction_on_basis at hu,
+    split_ifs at hu,
+    have armadillo : ∃ v ∈ (basis_terms X R) σ.val.2, A*v*B = u,
+    {
+      sorry,
+    },
+    cases armadillo with v hv,
+    cases hv with hv₁ hv₂,
+    rw ← hv₂,
+    rw h,
+    exact not_lt_of_ge(step₁ v hv₁),
   },
   {
     unfold basis_terms at hu,
     rw set.mem_set_of_eq at hu,
-    have step₁ : reduction_on_basis X R S σ A B a = bs R X a,
-    {
-      unfold reduction_on_basis,
-      split_ifs,
-      refl,
-    },
-    rw step₁ at hu,
+    unfold reduction_on_basis at hu,
+    split_ifs at hu,
     simp[basis.repr_self] at hu,
     have step₂ : u ∈ (finsupp.single a (1 : R)).support,
     {
@@ -226,6 +237,19 @@ end
 
 lemma compatible_implies_all_resolvable_are_resolvable_rel (s : compatible_semigroup_partial_order X R S) (amb: ambiguity X R S): ambiguity_is_resolvable X R S amb → ambiguity_resolvable_rel X R S amb s.to_semigroup_partial_order := by sorry
 
+---The below relation on S will be pushed to R to give the relations defining the ideal I we take the quotient by.
+def defining_pre_rel (S : reduction_system X R) : S.set → S.set → Prop := λ σ τ, σ = τ
+
+--- Now we give maps S → k<X> which allow us to define the relation on k<X> to quotient by
+def rs_to_alg_left (S : reduction_system X R) : S.set → (free_algebra R X) := λ σ, (free_algebra.basis_free_monoid R X) σ.val.1
+
+def rs_to_alg_right (S : reduction_system X R) : S.set → (free_algebra R X) := λ σ, σ.val.2
+
+--- We push the relation on S along the above maps to R.
+def defining_rel (S : reduction_system X R) : free_algebra R X → free_algebra R X → Prop := relation.map (defining_pre_rel X R S) (rs_to_alg_left X R S) (rs_to_alg_right X R S)
+
+--- This is the quotient k<X>/I, for I the ideal given by S. Need to fix the type here!
+def quotient_by_system (S : reduction_system X R) : Type* := ring_quot (defining_rel X R S)
 
 def diamond_lemma_prop_1 (s: compatible_semigroup_partial_order X R S) : Prop :=   ∀ amb: ambiguity X R S, ambiguity_is_resolvable X R S amb 
 
